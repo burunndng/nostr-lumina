@@ -13,26 +13,32 @@ const NAV_SECTIONS = [
     items: [
       { id: "01", name: "Browse", sub: "Find lists", href: "/lists" },
       { id: "02", name: "Following", sub: "Your feed", href: "/following" },
-      { id: "03", name: "Trending", sub: "Most zapped", href: "/lists" },
-      { id: "04", name: "Search", sub: "Find anything", href: "/lists" },
     ],
   },
   {
     label: "Categories",
     items: [
-      { id: "05", name: "Articles", sub: "Web reads", href: "/lists?category=curation:articles" },
-      { id: "06", name: "Books", sub: "Must-reads", href: "/lists?category=curation:books" },
-      { id: "07", name: "Videos", sub: "Watch later", href: "/lists?category=curation:videos" },
-      { id: "08", name: "Research", sub: "Deep dives", href: "/lists?category=curation:research" },
-      { id: "09", name: "Adult", sub: "18+ curated", href: "/lists?category=curation:nsfw:adult" },
-    ],
-  },
-  {
-    label: "Studio",
-    items: [
-      { id: "10", name: "Curate", sub: "Your lists", href: "/curate" },
-      { id: "11", name: "Relays", sub: "Connection health", href: "/settings/relays" },
-      { id: "12", name: "Preferences", sub: "Content settings", href: "/settings/preferences" },
+      { id: "03", name: "Articles", sub: "247 curated", href: "/lists?category=curation:articles", featured: [
+        { title: "The Bitcoin Standard by Saifedean Ammous", url: "https://www.amazon.com/Bitcoin-Standard-Decentralized-Alternative-Central/dp/1119473861" },
+        { title: "Why Bitcoin Matters (Marc Andreessen)", url: "https://a16z.com/2014/01/21/why-bitcoin-matters/" },
+      ]},
+      { id: "04", name: "Books", sub: "182 curated", href: "/lists?category=curation:books", featured: [
+        { title: "Mastering Bitcoin — Programming the Open Blockchain", url: "https://github.com/bitcoinbook/bitcoinbook" },
+        { title: "The Sovereign Individual — Davidson & Rees-Mogg", url: "https://www.amazon.com/Sovereign-Individual-Transition-Information-Age/dp/0684832720" },
+      ]},
+      { id: "05", name: "Research", sub: "93 curated", href: "/lists?category=curation:research", featured: [
+        { title: "Bitcoin Whitepaper — Satoshi Nakamoto", url: "https://bitcoin.org/bitcoin.pdf" },
+        { title: "Lightning Network BOLTs Specification", url: "https://github.com/lightning/bolts" },
+      ]},
+      { id: "06", name: "Videos", sub: "156 curated", href: "/lists?category=curation:videos", featured: [
+        { title: "How The Bitcoin Protocol Actually Works (Computerphile)", url: "https://www.youtube.com/watch?v=l9jGJrd2_Qk" },
+        { title: "Lightning Network Explained (MIT Media Lab)", url: "https://www.youtube.com/watch?v=rrrZ1UpHNRc" },
+      ]},
+      { id: "07", name: "Tools", sub: "64 curated", href: "/lists?category=curation:tools", featured: [
+        { title: "Nostr — A decentralized social protocol", url: "https://nostr.com" },
+        { title: "Alby — Lightning wallet for the web", url: "https://getalby.com" },
+      ]},
+      { id: "08", name: "Adult", sub: "18+ curated", href: "/lists?category=curation:nsfw:adult", featured: [] },
     ],
   },
 ]
@@ -59,6 +65,41 @@ export function NavigationMenu() {
         <LoginArea className="w-full" />
       </div>
 
+      {/* ── CURATE BUTTON — the whole point of the app ── */}
+      <Link
+        to="/curate"
+        className="w-full flex items-center justify-center gap-3 py-4 mb-10 no-underline rounded"
+        style={{
+          background: "rgba(200,144,64,0.9)",
+          color: "#060810",
+          fontFamily: "var(--font-display, inherit)",
+          fontSize: "clamp(1.2rem, 2.5vw, 1.6rem)",
+          fontWeight: 800,
+          letterSpacing: "0.05em",
+          textTransform: "uppercase",
+          border: "2px solid rgba(212,106,40,1)",
+          boxShadow: "0 0 40px rgba(200,144,64,0.3), inset 0 1px 0 rgba(255,255,255,0.15)",
+          transition: "all 0.2s ease",
+        }}
+        onMouseEnter={e => {
+          const el = e.currentTarget as HTMLElement
+          el.style.background = "rgba(212,106,40,1)"
+          el.style.boxShadow = "0 0 60px rgba(200,144,64,0.5), inset 0 1px 0 rgba(255,255,255,0.2)"
+          el.style.transform = "scale(1.02)"
+        }}
+        onMouseLeave={e => {
+          const el = e.currentTarget as HTMLElement
+          el.style.background = "rgba(200,144,64,0.9)"
+          el.style.boxShadow = "0 0 40px rgba(200,144,64,0.3), inset 0 1px 0 rgba(255,255,255,0.15)"
+          el.style.transform = "scale(1)"
+        }}
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+        </svg>
+        Curate
+      </Link>
+
       {/* Nav sections */}
       <nav className="flex-1 space-y-10">
         {NAV_SECTIONS.map((section) => (
@@ -72,7 +113,7 @@ export function NavigationMenu() {
 
             <ul className="space-y-0">
               {section.items.map((item) => {
-                const isActive = location.pathname === item.href || location.pathname + location.search === item.href
+                const isActive = location.pathname === item.href
                 const isHovered = hoveredItem === item.id
                 return (
                   <li key={item.id}>
@@ -102,7 +143,7 @@ export function NavigationMenu() {
                       <span
                         className="font-display uppercase leading-none"
                         style={{
-                          fontSize: "clamp(1.6rem, 3.2vw, 2.1rem)",
+                          fontSize: "clamp(1.4rem, 2.8vw, 1.8rem)",
                           fontWeight: 700,
                           letterSpacing: "-0.01em",
                           color: isActive
@@ -128,6 +169,37 @@ export function NavigationMenu() {
                         {item.sub}
                       </span>
                     </Link>
+
+                    {/* Featured posts for this category */}
+                    {item.featured && item.featured.length > 0 && isHovered && (
+                      <div
+                        className="ml-10 mb-3 space-y-2"
+                        style={{ animation: "revealFade 0.3s ease forwards" }}
+                      >
+                        {item.featured.map((post, i) => (
+                          <a
+                            key={i}
+                            href={post.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 py-1.5 no-underline group/post"
+                            style={{ borderBottom: "1px solid rgba(240,236,228,0.04)" }}
+                          >
+                            <svg width="8" height="8" viewBox="0 0 8 8" fill="none" className="shrink-0">
+                              <path d="M1 7L7 1M7 1H2M7 1V6" stroke="rgba(200,144,64,0.5)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                            <span
+                              className="font-mono text-[9px] truncate"
+                              style={{ color: "rgba(240,236,228,0.35)", letterSpacing: "0.05em", transition: "color 0.18s" }}
+                              onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = "rgba(200,144,64,0.8)")}
+                              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = "rgba(240,236,228,0.35)")}
+                            >
+                              {post.title}
+                            </span>
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </li>
                 )
               })}

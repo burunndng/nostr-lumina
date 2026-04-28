@@ -10,12 +10,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ListItemCard } from '@/components/curation/ListItemCard';
 import { ZapButton } from '@/components/ZapButton';
+import { CommentsSection } from '@/components/comments/CommentsSection';
 import { useLists } from '@/hooks/useLists';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
 import { sanitizeUrl } from '@/lib/sanitize';
 import { cn } from '@/lib/utils';
-import { getListTypeLabel } from '@/lib/nip51';
+import { getListTypeLabel, CURATION_LIST_KIND } from '@/lib/nip51';
 import { CONTENT_WARNING_LABELS, type ContentWarningLevel } from '@/lib/nip36';
 
 export function ListDetail() {
@@ -186,6 +187,22 @@ export function ListDetail() {
             nsfwEnabled={nsfwEnabled}
           />
         ))}
+      </div>
+
+      {/* Comments section */}
+      <div className="mt-8 pt-8" style={{ borderTop: "1px solid rgba(200,144,64,0.15)" }}>
+        <CommentsSection
+          root={{
+            id: list.eventId,
+            pubkey: list.pubkey,
+            kind: CURATION_LIST_KIND,
+            created_at: list.createdAt,
+            content: '',
+            tags: [['d', list.id]],
+          }}
+          emptyStateMessage="No discussion yet"
+          emptyStateSubtitle="Be the first to share your thoughts about this list!"
+        />
       </div>
     </div>
   );
