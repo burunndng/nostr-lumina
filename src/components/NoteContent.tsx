@@ -10,6 +10,11 @@ interface NoteContentProps {
  * Renders plain text with linkified URLs.
  */
 export function NoteContent({ content, className }: NoteContentProps) {
+  // Handle undefined or null content gracefully
+  if (content === undefined || content === null) {
+    return <span className={className} />;
+  }
+
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const parts = content.split(urlRegex);
 
