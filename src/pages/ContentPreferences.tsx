@@ -19,12 +19,11 @@ import {
   type NsfwCategory,
 } from '@/lib/nip36';
 
-useSeoMeta({
-  title: 'Content Preferences | NostrCurate',
-  description: 'Manage your NSFW content visibility settings',
-});
-
 export function ContentPreferences() {
+  useSeoMeta({
+    title: 'Content Preferences | NostrCurate',
+    description: 'Manage your NSFW content visibility settings',
+  });
   const [prefs, setPrefs] = React.useState<NsfwPreferences>(() => getNsfwPreferences());
   const [hasChanges, setHasChanges] = React.useState(false);
 

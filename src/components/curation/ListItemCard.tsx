@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { EyeIcon, EyeOffIcon, AlertTriangleIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, AlertTriangleIcon, ExternalLinkIcon, LinkIcon } from 'lucide-react';
+import { nip19 } from 'nostr-tools';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,55 @@ interface ListItemCardProps {
   showContentWarning?: boolean;
   nsfwEnabled?: boolean;
   className?: string;
+}
+
+/**
+ * Extract domain from URL for display.
+ */
+function getUrlDomain(url: string): string {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname.replace(/^www\./, '');
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * Check if a URL is a Nostr identifier (npub, note, naddr, etc.)
+ */
+function isNostrIdentifier(url: string): boolean {
+  return (
+    url.startsWith('npub1') ||
+    url.startsWith('note1') ||
+    url.startsWith('nprofile1') ||
+    url.startsWith('nevent1') ||
+    url.startsWith('naddr1') ||
+    url.startsWith('nsec1')
+  );
+}
+
+/**
+ * Convert Nostr identifier to a clickable route.
+ */
+function nostrToRoute(url: string): string | null {
+  try {
+    const decoded = nip19.decode(url);
+    switch (decoded.type) {
+      case 'npub':
+        return `/profile/${url}`;
+      case 'note':
+        return `/${url}`;
+      case 'nprofile':
+      case 'nevent':
+      case 'naddr':
+        return `/${url}`;
+      default:
+        return null;
+    }
+  } catch {
+    return null;
+  }
 }
 
 export function ListItemCard({
@@ -70,6 +120,8 @@ export function ListItemCard({
   }
 
   const displayUrl = sanitizeUrl(item.url);
+  const isNostrId = isNostrIdentifier(item.url);
+  const nostrRoute = isNostrId ? nostrToRoute(item.url) : null;
 
   return (
     <Card
@@ -93,9 +145,7 @@ export function ListItemCard({
               )}
             </div>
 
-            <h4 className="font-medium leading-tight truncate">
-              {item.title}
-            </h4>
+            <h4 className="font-medium leading-tight">{item.title}</h4>
 
             {item.notes && (
               <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
@@ -103,30 +153,88 @@ export function ListItemCard({
               </p>
             )}
 
+            {/* URL display */}
             {displayUrl && (
-              <a
-                href={displayUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-1 block text-sm text-primary hover:underline truncate"
-              >
-                {item.url}
-              </a>
+              <div className="mt-2 flex items-center gap-2">
+                <ExternalLinkIcon className="size-3 text-muted-foreground shrink-0" />
+                {isNostrId ? (
+                  // Nostr identifier - internal link
+                  nostrRoute ? (
+                    <a
+                      href={nostrRoute}
+                      className="text-sm text-primary hover:underline truncate"
+                    >
+                      {item.url.slice(0, 20)}...
+                    </a>
+                  ) : (
+                    <span className="text-sm text-muted-foreground truncate">
+                      {item.url.slice(0, 20)}...
+                    </span>
+                  )
+                ) : (
+                  // Regular URL
+                  <a
+                    href={displayUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary hover:underline truncate"
+                  >
+                    <span className="hidden sm:inline">{getUrlDomain(displayUrl)}</span>
+                    <span className="sm:hidden">Link</span>
+                  </a>
+                )}
+              </div>
+            )}
+
+            {/* Notes URL detection - linkify any URLs in notes */}
+            {item.notes && (
+              <LinkifiedText text={item.notes} />
             )}
           </div>
 
-          {hasWarning && !revealed && (
+          {hasWarning && (
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setRevealed(false)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={() => setRevealed(!revealed)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
             >
-              <EyeOffIcon className="size-4" />
+              {revealed ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
             </Button>
           )}
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+/**
+ * Simple linkify for URLs in text.
+ */
+function LinkifiedText({ text }: { text: string }) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (urlRegex.test(part)) {
+          const displayUrl = sanitizeUrl(part);
+          if (!displayUrl) return <span key={i}>{part}</span>;
+          return (
+            <a
+              key={i}
+              href={displayUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              {getUrlDomain(part)}
+            </a>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </>
   );
 }

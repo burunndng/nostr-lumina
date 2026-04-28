@@ -7,11 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useAppContext } from '@/hooks/useAppContext';
 
-useSeoMeta({
-  title: 'Relay Status | NostrCurate',
-  description: 'Monitor relay connections and propagation status',
-});
-
 interface RelayStatus {
   url: string;
   status: 'connected' | 'disconnected' | 'connecting' | 'error';
@@ -22,6 +17,11 @@ interface RelayStatus {
 }
 
 export function RelayStatusPage() {
+  useSeoMeta({
+    title: 'Relay Status | NostrCurate',
+    description: 'Monitor relay connections and propagation status',
+  });
+
   const { config } = useAppContext();
   const [statuses, setStatuses] = React.useState<RelayStatus[]>([]);
   const [isRefreshing, setIsRefreshing] = React.useState(false);

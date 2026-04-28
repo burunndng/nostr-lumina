@@ -15,12 +15,11 @@ import { getListTypeLabel } from '@/lib/nip51';
 import { CONTENT_WARNING_LABELS } from '@/lib/nip36';
 import { cn } from '@/lib/utils';
 
-useSeoMeta({
-  title: 'Following Feed | NostrCurate',
-  description: 'Lists from curators you follow',
-});
-
 export function FollowingFeed() {
+  useSeoMeta({
+    title: 'Following Feed | NostrCurate',
+    description: 'Lists from curators you follow',
+  });
   const { user } = useCurrentUser();
   const { lists, isLoading, hasFollowing } = useFollowingLists({
     userPubkey: user?.pubkey,

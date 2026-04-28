@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useSeoMeta } from '@unhead/react';
 import { ExternalLinkIcon, LockIcon, CopyIcon, CheckIcon } from 'lucide-react';
 
@@ -7,11 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ListItemCard } from '@/components/curation/ListItemCard';
-import { ContentWarningSelect } from '@/components/curation/ContentWarningSelect';
-import { useAppContext } from '@/hooks/useAppContext';
+import { ZapButton } from '@/components/ZapButton';
+import { useLists } from '@/hooks/useLists';
 import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
+import { sanitizeUrl } from '@/lib/sanitize';
 import { cn } from '@/lib/utils';
 import { getListTypeLabel } from '@/lib/nip51';
 import { CONTENT_WARNING_LABELS, type ContentWarningLevel } from '@/lib/nip36';
@@ -96,8 +98,15 @@ export function ListDetail() {
           </div>
 
           <div className="flex items-center gap-4 mt-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-primary/10" />
+            <Link to={`/profile/${pubkey}`} className="flex items-center gap-2 hover:opacity-80">
+              <Avatar size="sm">
+                {author.data?.metadata?.picture && (
+                  <AvatarImage src={sanitizeUrl(author.data.metadata.picture) || undefined} />
+                )}
+                <AvatarFallback>
+                  {author.data?.metadata?.name?.charAt(0)?.toUpperCase() || '?'}
+                </AvatarFallback>
+              </Avatar>
               <div>
                 <p className="font-medium text-sm">
                   {author.data?.metadata?.name || genUserName(pubkey || '')}
@@ -107,7 +116,7 @@ export function ListDetail() {
                   {new Date(list.createdAt * 1000).toLocaleDateString()}
                 </p>
               </div>
-            </div>
+            </Link>
 
             {list.visibility === 'premium' && (
               <Badge variant="secondary" className="ml-auto">
@@ -115,6 +124,17 @@ export function ListDetail() {
                 Premium
               </Badge>
             )}
+
+            <div className="ml-auto">
+              <ZapButton
+                target={{
+                  id: list.eventId,
+                  pubkey: list.pubkey,
+                  kind: 30100,
+                  created_at: list.createdAt,
+                }}
+              />
+            </div>
           </div>
 
           {hasNsfw && (
@@ -171,7 +191,7 @@ export function ListDetail() {
   );
 }
 
-// Placeholder - would use the actual useListByAuthor or a dedicated hook
+// useListData is the same as useLists
 function useListData(pubkey?: string, id?: string) {
   const { data, isLoading } = useLists({
     author: pubkey,
@@ -180,11 +200,9 @@ function useListData(pubkey?: string, id?: string) {
   });
 
   return {
-    data: data?.[0] as any,
+    data: data?.[0],
     isLoading,
   };
 }
-
-import { useLists } from '@/hooks/useLists';
 
 export default ListDetail;
