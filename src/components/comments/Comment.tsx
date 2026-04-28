@@ -150,7 +150,7 @@ export function Comment({ root, comment, depth = 0, maxDepth = 3, limit }: Comme
 
             {/* Comment Content */}
             <div className="text-sm">
-              <NoteContent event={comment} className="text-sm" />
+              <NoteContent content={comment.content} className="text-sm" />
             </div>
 
             {/* Comment Actions */}
