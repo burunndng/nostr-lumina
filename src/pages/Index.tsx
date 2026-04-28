@@ -16,13 +16,13 @@ import { LoginArea } from '@/components/auth/LoginArea';
 import { useNsfwOptIn } from '@/components/curation/NsfwOptInDialog';
 import { Badge } from '@/components/ui/badge';
 
-useSeoMeta({
-  title: 'NostrCurate | Curation Lists for Nostr',
-  description:
-    'Discover and curate content on Nostr. Public lists, premium collections, Lightning payments. No gatekeepers.',
-});
-
 export function Index() {
+  useSeoMeta({
+    title: 'NostrCurate | Curation Lists for Nostr',
+    description:
+      'Discover and curate content on Nostr. Public lists, premium collections, Lightning payments. No gatekeepers.',
+  });
+
   const { NsfwOptInDialogComponent } = useNsfwOptIn();
 
   return (
