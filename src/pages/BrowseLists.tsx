@@ -50,7 +50,7 @@ const POPULAR_TAGS = [
 
 export function BrowseLists() {
   useSeoMeta({
-    title: 'Browse Lists | NostrCurate',
+    title: 'Browse Lists | Kur4tex',
     description: 'Discover curated content lists on Nostr',
   });
 

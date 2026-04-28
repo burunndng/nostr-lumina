@@ -18,7 +18,7 @@ interface RelayStatus {
 
 export function RelayStatusPage() {
   useSeoMeta({
-    title: 'Relay Status | NostrCurate',
+    title: 'Relay Status | Kur4tex',
     description: 'Monitor relay connections and propagation status',
   });
 

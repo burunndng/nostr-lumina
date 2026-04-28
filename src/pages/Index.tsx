@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 
 export function Index() {
   useSeoMeta({
-    title: 'NostrCurate | Curation Lists for Nostr',
+    title: 'Kur4tex | Curation Lists for Nostr',
     description:
       'Discover and curate content on Nostr. Public lists, premium collections, Lightning payments. No gatekeepers.',
   });
@@ -32,7 +32,7 @@ export function Index() {
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
             <ListIcon className="size-6 text-primary" />
-            <span className="font-bold text-xl">NostrCurate</span>
+            <span className="font-bold text-xl">Kur4tex</span>
           </div>
           <nav className="flex items-center gap-4">
             <Link
@@ -95,7 +95,7 @@ export function Index() {
         <section className="py-16 bg-muted/30">
           <div className="container">
             <h2 className="text-2xl font-bold text-center mb-12">
-              Why NostrCurate?
+              Why Kur4tex?
             </h2>
             <div className="grid gap-6 md:grid-cols-3">
               <FeatureCard
@@ -173,7 +173,7 @@ export function Index() {
             <div className="flex items-center gap-2">
               <ListIcon className="size-5 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
-                NostrCurate — Curation Lists for Nostr
+                Kur4tex — Curation Lists for Nostr
               </span>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">

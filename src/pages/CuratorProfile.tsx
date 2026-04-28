@@ -42,9 +42,9 @@ export function CuratorProfile() {
 
   useSeoMeta({
     title: metadata?.name
-      ? `${metadata.name} | NostrCurate`
-      : `Curator Profile | NostrCurate`,
-    description: metadata?.about || 'Curator profile on NostrCurate',
+      ? `${metadata.name} | Kur4tex`
+      : `Curator Profile | Kur4tex`,
+    description: metadata?.about || 'Curator profile on Kur4tex',
   });
 
   if (loadingAuthor || loadingLists) {

@@ -28,8 +28,8 @@ export function ListDetail() {
   const [copied, setCopied] = React.useState(false);
 
   useSeoMeta({
-    title: list ? `${list.title} | NostrCurate` : 'Loading... | NostrCurate',
-    description: list?.description || 'View this curation list on NostrCurate',
+    title: list ? `${list.title} | Kur4tex` : 'Loading... | Kur4tex',
+    description: list?.description || 'View this curation list on Kur4tex',
   });
 
   const handleCopyLink = () => {
