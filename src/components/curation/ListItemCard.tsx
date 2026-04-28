@@ -38,7 +38,8 @@ function getUrlDomain(url: string): string {
 /**
  * Check if a URL is a Nostr identifier (npub, note, naddr, etc.)
  */
-function isNostrIdentifier(url: string): boolean {
+function isNostrIdentifier(url: string | undefined): boolean {
+  if (!url) return false;
   return (
     url.startsWith('npub1') ||
     url.startsWith('note1') ||
@@ -119,9 +120,9 @@ export function ListItemCard({
     );
   }
 
-  const displayUrl = sanitizeUrl(item.url);
+  const displayUrl = item.url ? sanitizeUrl(item.url) : null;
   const isNostrId = isNostrIdentifier(item.url);
-  const nostrRoute = isNostrId ? nostrToRoute(item.url) : null;
+  const nostrRoute = isNostrId && item.url ? nostrToRoute(item.url) : null;
 
   return (
     <Card
