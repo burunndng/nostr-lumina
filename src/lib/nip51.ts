@@ -122,8 +122,7 @@ export function parseListContent(content: string): ListItem[] {
       };
       items.push(item);
     } catch {
-      // Skip malformed lines
-      console.warn('Skipped malformed list item:', line);
+      // Skip malformed lines (non-JSON content from other kind 30100 events)
     }
   }
 
