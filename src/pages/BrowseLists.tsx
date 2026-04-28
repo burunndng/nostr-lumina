@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useSeoMeta } from '@unhead/react';
-import { SearchIcon, FilterIcon, ListIcon } from 'lucide-react';
+import { SearchIcon, FilterIcon, ListIcon, ArrowUpDownIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,12 +9,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { ListItemCard } from '@/components/curation/ListItemCard';
 import { useLists } from '@/hooks/useLists';
 import { useAppContext } from '@/hooks/useAppContext';
+import { useNip85UserStats } from '@/hooks/useNip85Stats';
 import { cn } from '@/lib/utils';
 import { getListTypeLabel, type ListType } from '@/lib/nip51';
 import { CONTENT_WARNING_LABELS } from '@/lib/nip36';
+import { sortListsByTrust } from '@/lib/trustRanking';
 
 const CATEGORY_OPTIONS: { value: ListType | 'all'; label: string }[] = [
   { value: 'all', label: 'All Categories' },
@@ -26,6 +35,17 @@ const CATEGORY_OPTIONS: { value: ListType | 'all'; label: string }[] = [
   { value: 'curation:podcasts', label: 'Podcasts' },
   { value: 'curation:videos', label: 'Videos' },
   { value: 'curation:nsfw:adult', label: 'Adult' },
+];
+
+const POPULAR_TAGS = [
+  'bitcoin',
+  'lightning',
+  'development',
+  'research',
+  'security',
+  'privacy',
+  'nos',
+  'damus',
 ];
 
 export function BrowseLists() {
@@ -40,6 +60,7 @@ export function BrowseLists() {
   const category = searchParams.get('category') || 'all';
   const search = searchParams.get('search') || '';
   const tag = searchParams.get('tag') || '';
+  const sortBy = searchParams.get('sort') || 'trust';
 
   const { data: lists, isLoading } = useLists({
     type: category === 'all' ? undefined : (category as ListType),
@@ -49,6 +70,22 @@ export function BrowseLists() {
     ) ?? false,
     limit: 30,
   });
+
+  // Sort lists by trust score or recency
+  const sortedLists = React.useMemo(() => {
+    if (!lists) return [];
+    if (sortBy === 'trust') {
+      // Build stats map for trust ranking
+      const statsMap = new Map();
+      lists.forEach((list) => {
+        // We'd need to fetch stats for each author; for now, use a placeholder
+        statsMap.set(list.pubkey, { followers: 0, postCount: 0, zapAmount: 0 });
+      });
+      return sortListsByTrust(lists, statsMap);
+    }
+    // Default: sort by recency (newest first)
+    return [...lists].sort((a, b) => b.createdAt - a.createdAt);
+  }, [lists, sortBy]);
 
   const updateParam = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams);
@@ -69,24 +106,61 @@ export function BrowseLists() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 mb-8 sm:flex-row">
-        <div className="relative flex-1">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input
-            placeholder="Search lists..."
-            value={search}
-            onChange={(e) => updateParam('search', e.target.value)}
-            className="pl-10"
-          />
+      <div className="flex flex-col gap-4 mb-8">
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="relative flex-1">
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+            <Input
+              placeholder="Search lists..."
+              value={search}
+              onChange={(e) => updateParam('search', e.target.value)}
+              className="pl-10"
+            />
+          </div>
+
+          <Select value={sortBy} onValueChange={(v) => updateParam('sort', v)}>
+            <SelectTrigger className="w-full sm:w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="trust">Trust Score</SelectItem>
+              <SelectItem value="newest">Newest First</SelectItem>
+              <SelectItem value="oldest">Oldest First</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        <Button
-          variant="outline"
-          onClick={() => updateParam('tag', prompt('Enter tag:') || '')}
-        >
-          <FilterIcon className="size-4 mr-2" />
-          Filter by Tag
-        </Button>
+        {/* Popular tags */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm text-muted-foreground flex items-center gap-1">
+            <FilterIcon className="size-3" />
+            Popular tags:
+          </span>
+          {POPULAR_TAGS.map((t) => (
+            <button
+              key={t}
+              onClick={() => updateParam('tag', t)}
+              className={cn(
+                'text-xs px-2 py-1 rounded-full transition-colors',
+                tag === t
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+              )}
+            >
+              #{t}
+            </button>
+          ))}
+          {tag && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => updateParam('tag', '')}
+              className="h-auto px-2 py-1"
+            >
+              Clear tag
+            </Button>
+          )}
+        </div>
       </div>
 
       <Tabs value={category} onValueChange={(v) => updateParam('category', v)}>
@@ -128,7 +202,7 @@ export function BrowseLists() {
                 </Card>
               ))}
             </div>
-          ) : !lists || lists.length === 0 ? (
+          ) : !sortedLists || sortedLists.length === 0 ? (
             <Card className="border-dashed">
               <CardContent className="py-12 text-center">
                 <ListIcon className="size-12 mx-auto text-muted-foreground mb-4" />
@@ -139,7 +213,7 @@ export function BrowseLists() {
             </Card>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2">
-              {lists.map((list) => (
+              {sortedLists.map((list) => (
                 <ListCard key={list.eventId} list={list} />
               ))}
             </div>

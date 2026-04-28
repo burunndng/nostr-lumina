@@ -25,6 +25,10 @@ const RelayMetadataSchema = z.object({
 const AppConfigSchema = z.object({
   theme: z.enum(['dark', 'light', 'system']),
   relayMetadata: RelayMetadataSchema,
+  nip85StatsPubkey: z.string().refine(
+    (val) => val.length === 0 || /^[0-9a-f]{64}$/i.test(val),
+    { message: 'Must be empty or a 64-character hex pubkey' },
+  ),
 }) satisfies z.ZodType<AppConfig>;
 
 export function AppProvider(props: AppProviderProps) {

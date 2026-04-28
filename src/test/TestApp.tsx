@@ -28,6 +28,7 @@ export function TestApp({ children }: TestAppProps) {
       ],
       updatedAt: 0,
     },
+    nip85StatsPubkey: '',
   };
 
   return (

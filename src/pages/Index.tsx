@@ -37,9 +37,21 @@ export function Index() {
           <nav className="flex items-center gap-4">
             <Link
               to="/lists"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
             >
-              Browse Lists
+              Browse
+            </Link>
+            <Link
+              to="/following"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
+            >
+              Following
+            </Link>
+            <Link
+              to="/curate"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
+            >
+              Curate
             </Link>
             <LoginArea />
           </nav>

@@ -14,6 +14,8 @@ export interface AppConfig {
   theme: Theme;
   /** NIP-65 relay list metadata */
   relayMetadata: RelayMetadata;
+  /** Hex pubkey of the NIP-85 Trusted Assertion provider. Empty = disabled. */
+  nip85StatsPubkey: string;
 }
 
 export interface AppContextType {
