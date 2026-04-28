@@ -4,6 +4,9 @@ import { ScrollToTop } from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import { NIP19Page } from "./pages/NIP19Page";
 import NotFound from "./pages/NotFound";
+import { CuratorDashboard } from "./pages/CuratorDashboard";
+import { BrowseLists } from "./pages/BrowseLists";
+import { ListDetail } from "./pages/ListDetail";
 
 export function AppRouter() {
   return (
@@ -11,6 +14,9 @@ export function AppRouter() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/curate" element={<CuratorDashboard />} />
+        <Route path="/lists" element={<BrowseLists />} />
+        <Route path="/list/:pubkey/:id" element={<ListDetail />} />
         {/* NIP-19 route for npub1, note1, naddr1, nevent1, nprofile1 */}
         <Route path="/:nip19" element={<NIP19Page />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
