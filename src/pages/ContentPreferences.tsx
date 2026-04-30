@@ -21,7 +21,7 @@ import {
 
 export function ContentPreferences() {
   useSeoMeta({
-    title: 'Content Preferences | Kur4tex',
+    title: 'Content Preferences | KUR4TEK',
     description: 'Manage your NSFW content visibility settings',
   });
   const [prefs, setPrefs] = React.useState<NsfwPreferences>(() => getNsfwPreferences());
@@ -57,7 +57,7 @@ export function ContentPreferences() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Content Preferences</h1>
         <p className="text-muted-foreground mt-1">
-          Control what types of content you see on Kur4tex
+          Control what types of content you see on KUR4TEK
         </p>
       </div>
 

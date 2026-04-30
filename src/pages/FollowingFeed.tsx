@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 
 export function FollowingFeed() {
   useSeoMeta({
-    title: 'Following Feed | Kur4tex',
+    title: 'Following Feed | KUR4TEK',
     description: 'Lists from curators you follow',
   });
   const { user } = useCurrentUser();

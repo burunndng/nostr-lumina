@@ -50,7 +50,7 @@ const POPULAR_TAGS = [
 
 export function BrowseLists() {
   useSeoMeta({
-    title: 'Browse Lists | Kur4tex',
+    title: 'Browse Lists | KUR4TEK',
     description: 'Discover curated content lists on Nostr',
   });
 
@@ -284,7 +284,7 @@ function ListCard({ list }: ListCardProps) {
                 item={item as any}
                 index={i}
                 showContentWarning={false}
-                className="border-0 shadow-none bg-transparent"
+                className="px-0 hover:bg-transparent"
               />
             ))}
             {list.items.length > 2 && (

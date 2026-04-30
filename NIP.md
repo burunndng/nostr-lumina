@@ -1,4 +1,4 @@
-# Kur4tex NIPs
+# KUR4TEK NIPs
 
 This document describes the custom Nostr event kinds and tag conventions used by NostrCurate.
 

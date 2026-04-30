@@ -10,7 +10,7 @@ import { Link } from "react-router-dom"
 
 export default function Index() {
   useSeoMeta({
-    title: 'Kur4tex | Curation Lists for Nostr',
+    title: 'KUR4TEK | Curation Lists for Nostr',
     description: 'Discover and curate content on Nostr. Public lists, premium collections, Lightning payments. No gatekeepers.',
   })
 

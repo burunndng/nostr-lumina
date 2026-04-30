@@ -84,7 +84,7 @@
 }
 
 :root {
-  /* Kur4tex — cinematic dark palette */
+  /* KUR4TEK — cinematic dark palette */
   --radius: 0.75rem;
 
   --background: hsl(220 15% 6%);
@@ -130,7 +130,7 @@
   --sidebar-border: hsl(220 10% 18%);
   --sidebar-ring: hsl(22 80% 55%);
 
-  /* Kur4tex Panel dimensions */
+  /* KUR4TEK Panel dimensions */
   --panel-width-expanded: 44vw;
   --panel-tab-width: 48px;
 }
@@ -200,7 +200,7 @@
   }
 }
 
-/* ── Kur4tex Cinematic Styles ─────────────────────────────── */
+/* ── KUR4TEK Cinematic Styles ─────────────────────────────── */
 
 /* Panel slide transition */
 .panel-transition {

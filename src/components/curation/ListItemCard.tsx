@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { EyeIcon, EyeOffIcon, AlertTriangleIcon, ExternalLinkIcon, LinkIcon } from 'lucide-react';
+import { ExternalLinkIcon, AlertTriangleIcon, EyeIcon, EyeOffIcon, MessageSquareIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { nip19 } from 'nostr-tools';
 
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -21,6 +21,9 @@ interface ListItemCardProps {
   showContentWarning?: boolean;
   nsfwEnabled?: boolean;
   className?: string;
+  listPubkey?: string;
+  listId?: string;
+  commentCount?: number;
 }
 
 /**
@@ -58,9 +61,8 @@ function nostrToRoute(url: string): string | null {
     const decoded = nip19.decode(url);
     switch (decoded.type) {
       case 'npub':
-        return `/profile/${url}`;
-      case 'note':
         return `/${url}`;
+      case 'note':
       case 'nprofile':
       case 'nevent':
       case 'naddr':
@@ -79,6 +81,9 @@ export function ListItemCard({
   showContentWarning = true,
   nsfwEnabled = false,
   className,
+  listPubkey,
+  listId,
+  commentCount,
 }: ListItemCardProps) {
   const [revealed, setRevealed] = React.useState(false);
 
@@ -89,153 +94,135 @@ export function ListItemCard({
   // Don't show NSFW content unless enabled
   if (isNsfw && !nsfwEnabled && !revealed) {
     return (
-      <Card
+      <div
         className={cn(
-          'relative overflow-hidden bg-muted/50',
+          'flex items-center gap-3 px-3 py-2.5 rounded-md bg-muted/30',
           className
         )}
       >
-        <CardContent className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-3">
-            <AlertTriangleIcon className="size-5 text-muted-foreground" />
-            <div>
-              <p className="font-medium text-muted-foreground">
-                Sensitive Content
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {CONTENT_WARNING_LABELS[item.cw]}
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setRevealed(true)}
-          >
-            <EyeIcon className="size-4 mr-1" />
-            Reveal
-          </Button>
-        </CardContent>
-      </Card>
+        <span className="text-sm font-medium text-muted-foreground w-5 text-right shrink-0">
+          {index + 1}.
+        </span>
+        <AlertTriangleIcon className="size-4 text-muted-foreground shrink-0" />
+        <span className="text-sm text-muted-foreground flex-1">
+          Sensitive Content · {CONTENT_WARNING_LABELS[item.cw]}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setRevealed(true)}
+          className="h-7 text-xs shrink-0"
+        >
+          <EyeIcon className="size-3.5 mr-1" />
+          Show
+        </Button>
+      </div>
     );
   }
 
   const displayUrl = item.url ? sanitizeUrl(item.url) : null;
   const isNostrId = isNostrIdentifier(item.url);
   const nostrRoute = isNostrId && item.url ? nostrToRoute(item.url) : null;
+  const domain = displayUrl && !isNostrId ? getUrlDomain(displayUrl) : null;
+
+  // Build the title link — external URL, internal Nostr route, or plain text
+  const titleContent = (
+    <span className="font-medium text-foreground hover:text-primary transition-colors leading-snug">
+      {item.title}
+    </span>
+  );
 
   return (
-    <Card
+    <div
       className={cn(
-        'group relative',
+        'group flex gap-3 px-3 py-2.5 rounded-md hover:bg-muted/40 transition-colors',
         shouldBlur && 'blur-sm',
         className
       )}
     >
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-sm text-muted-foreground">
-                {index + 1}.
-              </span>
-              {hasWarning && (
-                <Badge variant="outline" className="text-xs">
-                  {CONTENT_WARNING_ICONS[item.cw]} {CONTENT_WARNING_LABELS[item.cw]}
-                </Badge>
-              )}
-            </div>
+      {/* Rank number */}
+      <span className="text-sm font-medium text-muted-foreground/60 w-5 text-right shrink-0 leading-relaxed">
+        {index + 1}.
+      </span>
 
-            <h4 className="font-medium leading-tight">{item.title}</h4>
-
-            {item.notes && (
-              <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-                {item.notes}
-              </p>
-            )}
-
-            {/* URL display */}
-            {displayUrl && (
-              <div className="mt-2 flex items-center gap-2">
-                <ExternalLinkIcon className="size-3 text-muted-foreground shrink-0" />
-                {isNostrId ? (
-                  // Nostr identifier - internal link
-                  nostrRoute ? (
-                    <a
-                      href={nostrRoute}
-                      className="text-sm text-primary hover:underline truncate"
-                    >
-                      {item.url.slice(0, 20)}...
-                    </a>
-                  ) : (
-                    <span className="text-sm text-muted-foreground truncate">
-                      {item.url.slice(0, 20)}...
-                    </span>
-                  )
-                ) : (
-                  // Regular URL
-                  <a
-                    href={displayUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline truncate"
-                  >
-                    <span className="hidden sm:inline">{getUrlDomain(displayUrl)}</span>
-                    <span className="sm:hidden">Link</span>
-                  </a>
-                )}
-              </div>
-            )}
-
-            {/* Notes URL detection - linkify any URLs in notes */}
-            {item.notes && (
-              <LinkifiedText text={item.notes} />
-            )}
-          </div>
-
-          {hasWarning && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setRevealed(!revealed)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-            >
-              {revealed ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
-            </Button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-/**
- * Simple linkify for URLs in text.
- */
-function LinkifiedText({ text }: { text: string }) {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  const parts = text.split(urlRegex);
-
-  return (
-    <>
-      {parts.map((part, i) => {
-        if (urlRegex.test(part)) {
-          const displayUrl = sanitizeUrl(part);
-          if (!displayUrl) return <span key={i}>{part}</span>;
-          return (
+      {/* Main content area */}
+      <div className="flex-1 min-w-0">
+        {/* Title line */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {displayUrl && !isNostrId ? (
             <a
-              key={i}
               href={displayUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline"
+              className="inline-flex items-center gap-1.5 hover:text-primary transition-colors"
             >
-              {getUrlDomain(part)}
+              {titleContent}
+              {domain && (
+                <span className="text-xs text-muted-foreground font-normal">
+                  ({domain})
+                </span>
+              )}
+              <ExternalLinkIcon className="size-3 text-muted-foreground/50 shrink-0" />
             </a>
-          );
-        }
-        return <span key={i}>{part}</span>;
-      })}
-    </>
+          ) : isNostrId && nostrRoute ? (
+            <Link
+              to={nostrRoute}
+              className="inline-flex items-center gap-1.5"
+            >
+              {titleContent}
+            </Link>
+          ) : (
+            titleContent
+          )}
+
+          {/* CW Badge inline */}
+          {hasWarning && (
+            <Badge variant="outline" className="text-[10px] h-4 px-1 font-normal">
+              {CONTENT_WARNING_ICONS[item.cw]} {CONTENT_WARNING_LABELS[item.cw]}
+            </Badge>
+          )}
+        </div>
+
+        {/* Notes - compact */}
+        {item.notes && (
+          <p className="mt-0.5 text-xs text-muted-foreground/70 line-clamp-1 leading-relaxed">
+            {item.notes}
+          </p>
+        )}
+
+        {/* Metadata line */}
+        <div className="flex items-center gap-2 mt-1 text-[11px] text-muted-foreground/50">
+          {listPubkey && listId && (
+            <span>
+              in{' '}
+              <Link
+                to={`/list/${listPubkey}/${listId}`}
+                className="hover:text-muted-foreground transition-colors"
+              >
+                list
+              </Link>
+            </span>
+          )}
+          {commentCount !== undefined && commentCount > 0 && (
+            <span className="flex items-center gap-0.5">
+              <MessageSquareIcon className="size-3" />
+              {commentCount}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Reveal button for warned content */}
+      {hasWarning && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setRevealed(!revealed)}
+          className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 p-0 shrink-0"
+        >
+          {revealed ? <EyeOffIcon className="size-3.5" /> : <EyeIcon className="size-3.5" />}
+        </Button>
+      )}
+    </div>
   );
 }

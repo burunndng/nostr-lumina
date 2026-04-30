@@ -29,8 +29,8 @@ export function ListDetail() {
   const [copied, setCopied] = React.useState(false);
 
   useSeoMeta({
-    title: list ? `${list.title} | Kur4tex` : 'Loading... | Kur4tex',
-    description: list?.description || 'View this curation list on Kur4tex',
+    title: list ? `${list.title} | KUR4TEK` : 'Loading... | KUR4TEK',
+    description: list?.description || 'View this curation list on KUR4TEK',
   });
 
   const handleCopyLink = () => {

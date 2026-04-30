@@ -10,8 +10,6 @@ import { getListTypeLabel } from "@/lib/nip51"
 import { CONTENT_WARNING_LABELS } from "@/lib/nip36"
 
 const CONNECT = [
-  { label: "GitHub", href: "https://github.com/burunndng/nostr-lumina" },
-  { label: "Shakespeare", href: "https://shakespeare.diy" },
   { label: "NIP-51 Spec", href: "https://github.com/nostr-protocol/nips/blob/master/51.md" },
 ]
 
@@ -38,7 +36,7 @@ export function InfoPanel() {
       {/* Header */}
       <div className="mb-10">
         <p className="font-mono text-[10px] uppercase tracking-[0.5em]" style={{ color: "rgba(200,144,64,0.7)" }}>
-          Kur4tex &nbsp;/&nbsp; Channel
+          KUR4TEK &nbsp;/&nbsp; Channel
         </p>
         <div className="mt-4 h-px" style={{ background: "linear-gradient(90deg, rgba(200,144,64,0.5), transparent)" }} />
       </div>
@@ -203,7 +201,7 @@ export function InfoPanel() {
       {/* Footer tag */}
       <div className="mt-12 pt-8 flex items-center justify-between" style={{ borderTop: "1px solid rgba(240,236,228,0.08)" }}>
         <span className="font-mono text-[9px] uppercase tracking-[0.4em]" style={{ color: "rgba(240,236,228,0.18)" }}>
-          Kur4tex &copy; 2026
+          KUR4TEK &copy; 2026
         </span>
         <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: "rgba(200,144,64,0.4)" }}>
           Curation is truth

@@ -19,7 +19,7 @@ import { CONTENT_WARNING_LABELS, type ContentWarningLevel } from '@/lib/nip36';
 
 export function CuratorDashboard() {
   useSeoMeta({
-    title: 'My Curation Lists | Kur4tex',
+    title: 'My Curation Lists | KUR4TEK',
     description: 'Create and manage your curation lists on Nostr',
   });
 
@@ -70,7 +70,7 @@ export function CuratorDashboard() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>Join Kur4tex</CardTitle>
+            <CardTitle>Join KUR4TEK</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">

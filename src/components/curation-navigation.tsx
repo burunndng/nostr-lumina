@@ -55,7 +55,7 @@ export function NavigationMenu() {
       {/* Header */}
       <div className="mb-10">
         <p className="font-mono text-[10px] uppercase tracking-[0.5em]" style={{ color: "rgba(200,144,64,0.7)" }}>
-          Kur4tex &nbsp;/&nbsp; Navigation
+          KUR4TEK &nbsp;/&nbsp; Navigation
         </p>
         <div className="mt-4 h-px" style={{ background: "linear-gradient(90deg, rgba(200,144,64,0.5), transparent)" }} />
       </div>
@@ -243,17 +243,7 @@ export function NavigationMenu() {
         <span className="font-mono text-[9px] uppercase tracking-[0.4em]" style={{ color: "rgba(240,236,228,0.18)" }}>
           Phase 2 &mdash; 2026
         </span>
-        <a
-          href="https://github.com/burunndng/nostr-lumina"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-mono text-[9px] uppercase tracking-[0.25em] no-underline"
-          style={{ color: "rgba(240,236,228,0.22)", transition: "color 0.18s ease" }}
-          onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = "rgba(200,144,64,0.85)")}
-          onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = "rgba(240,236,228,0.22)")}
-        >
-          GitHub
-        </a>
+
       </div>
     </div>
   )
