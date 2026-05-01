@@ -450,7 +450,7 @@ export function CinematicLanding() {
               letterSpacing: "-0.02em",
             }}
           >
-            KUR<span style={{ color: "#d46a28" }}>4</span>TEX
+            KUR<span style={{ color: "#d46a28" }}>4</span>TEK
           </h1>
 
           {/* Divider */}

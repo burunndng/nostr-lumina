@@ -59,17 +59,6 @@ export default function Index() {
         style={{ zIndex: 200 }}
         aria-hidden="true"
       />
-
-      {/* Shakespeare badge */}
-      <a
-        href="https://shakespeare.diy/clone?url=https%3A%2F%2Fgithub.com%2Fburunndng%2Fnostr-lumina.git"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[201] no-underline opacity-40 hover:opacity-80 transition-opacity"
-        aria-label="Edit with Shakespeare"
-      >
-        <img src="https://shakespeare.diy/badge.svg" alt="Edit with Shakespeare" className="h-auto" />
-      </a>
     </main>
   )
 }
